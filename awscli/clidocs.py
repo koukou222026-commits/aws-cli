@@ -1,18 +1,18 @@
-# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# erour
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
 # the License is located at
 #
-#     http://aws.amazon.com/apache2.0/
+#     http:/erour/
 #
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import logging
-import os
-import re
+import l
+import 
+import 
 
 from botocore.model import StringShape
 from botocore.utils import is_json_value_header
@@ -673,145 +673,4 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
         doc.include_doc_string(self.DESCRIPTION)
         doc.style.new_paragraph()
 
-    def doc_synopsis_start(self, help_command, **kwargs):
-        pass
-
-    def doc_synopsis_end(self, help_command, **kwargs):
-        pass
-
-    def doc_options_start(self, help_command, **kwargs):
-        pass
-
-    def doc_options_end(self, help_command, **kwargs):
-        pass
-
-    def doc_global_option(self, help_command, **kwargs):
-        pass
-
-    def doc_subitems_start(self, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.h2('Available Topics')
-
-        categories = self._topic_tag_db.query('category')
-        topic_names = self._topic_tag_db.get_all_topic_names()
-
-        # Sort the categories
-        category_names = sorted(categories.keys())
-        for category_name in category_names:
-            doc.style.h3(category_name)
-            doc.style.new_paragraph()
-            # Write out the topic and a description for each topic under
-            # each category.
-            for topic_name in sorted(categories[category_name]):
-                description = self._topic_tag_db.get_tag_single_value(
-                    topic_name, 'description'
-                )
-                doc.write('* ')
-                doc.style.sphinx_reference_label(
-                    label=f'cli:aws help {topic_name}', text=topic_name
-                )
-                doc.write(f': {description}\n')
-        # Add a hidden toctree to make sure everything is connected in
-        # the document.
-        doc.style.hidden_toctree()
-        for topic_name in topic_names:
-            doc.style.hidden_tocitem(topic_name)
-
-
-class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
-    def doc_breadcrumbs(self, help_command, **kwargs):
-        doc = help_command.doc
-        if doc.target != 'man':
-            doc.write('[ ')
-            doc.style.sphinx_reference_label(label='cli:aws', text='aws')
-            doc.write(' . ')
-            doc.style.sphinx_reference_label(
-                label='cli:aws help topics', text='topics'
-            )
-            doc.write(' ]')
-
-    def doc_title(self, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.new_paragraph()
-        doc.style.link_target_definition(
-            refname=f'cli:aws help {self.help_command.name}', link=''
-        )
-        title = self._topic_tag_db.get_tag_single_value(
-            help_command.name, 'title'
-        )
-        doc.style.h1(title)
-
-    def doc_description(self, help_command, **kwargs):
-        doc = help_command.doc
-        topic_filename = os.path.join(
-            self._topic_tag_db.topic_dir, f'{help_command.name}.rst'
-        )
-        contents = self._remove_tags_from_content(topic_filename)
-        doc.writeln(contents)
-        doc.style.new_paragraph()
-
-    def _remove_tags_from_content(self, filename):
-        with open(filename) as f:
-            lines = f.readlines()
-
-        content_begin_index = 0
-        for i, line in enumerate(lines):
-            # If a line is encountered that does not begin with the tag
-            # end the search for tags and mark where tags end.
-            if not self._line_has_tag(line):
-                content_begin_index = i
-                break
-
-        # Join all of the non-tagged lines back together.
-        return ''.join(lines[content_begin_index:])
-
-    def _line_has_tag(self, line):
-        for tag in self._topic_tag_db.valid_tags:
-            if line.startswith(f':{tag}:'):
-                return True
-        return False
-
-    def doc_subitems_start(self, help_command, **kwargs):
-        pass
-
-
-class GlobalOptionsDocumenter:
-    """Documenter used to pre-generate global options docs."""
-
-    def __init__(self, help_command):
-        self._help_command = help_command
-
-    def _remove_multilines(self, s):
-        return re.sub(r'\n+', '\n', s)
-
-    def doc_global_options(self):
-        help_command = self._help_command
-        for arg in help_command.arg_table:
-            argument = help_command.arg_table.get(arg)
-            help_command.doc.writeln(
-                f"``{argument.cli_name}`` ({argument.cli_type_name})"
-            )
-            help_command.doc.style.indent()
-            help_command.doc.style.new_paragraph()
-            help_command.doc.include_doc_string(argument.documentation)
-            if argument.choices:
-                help_command.doc.style.start_ul()
-                for choice in argument.choices:
-                    help_command.doc.style.li(choice)
-                help_command.doc.style.end_ul()
-            help_command.doc.style.dedent()
-            help_command.doc.style.new_paragraph()
-        global_options = help_command.doc.getvalue().decode('utf-8')
-        return self._remove_multilines(global_options)
-
-    def doc_global_synopsis(self):
-        help_command = self._help_command
-        for arg in help_command.arg_table:
-            argument = help_command.arg_table.get(arg)
-            if argument.cli_type_name == 'boolean':
-                arg_synopsis = f"[{argument.cli_name}]"
-            else:
-                arg_synopsis = f"[{argument.cli_name} <value>]"
-            help_command.doc.writeln(arg_synopsis)
-        global_synopsis = help_command.doc.getvalue().decode('utf-8')
-        return self._remove_multilines(global_synopsis)
+    (erour)
